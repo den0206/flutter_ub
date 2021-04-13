@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "36317817924",
+    "project_id": "flutter-message-d8190",
+    "storage_bucket": "flutter-message-d8190.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36317817924:android:c2b52d2f442be46de3a011",
+        "android_client_info": {
+          "package_name": "com.example.flutter_ub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36317817924-6ulsjpetoilf0fpgq6tgnv7ej1i4a9m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJnooHEA-Pzh6mcH2A9htR1WD0Bch-xHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36317817924-6ulsjpetoilf0fpgq6tgnv7ej1i4a9m9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36317817924-fiafga458uvo4ku18hscrooipe4jtnt1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "yuuki.telegramchatapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36317817924:android:64a15841c5943a42e3a011",
+        "android_client_info": {
+          "package_name": "yuuki.telegramchatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36317817924-6ulsjpetoilf0fpgq6tgnv7ej1i4a9m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJnooHEA-Pzh6mcH2A9htR1WD0Bch-xHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36317817924-6ulsjpetoilf0fpgq6tgnv7ej1i4a9m9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36317817924-fiafga458uvo4ku18hscrooipe4jtnt1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "yuuki.telegramchatapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
