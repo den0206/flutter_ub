@@ -13,7 +13,8 @@ class SignUpModel extends ChangeNotifier {
 
   final _auth = FirebaseAuth.instance;
 
-  Future<void> registerUser() async {
+  Future registerUser(
+      {@required Function(FBUser) onSuccess, @required Function onFail}) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -22,11 +23,15 @@ class SignUpModel extends ChangeNotifier {
       if (credential.user != null) {
         FBUser user = FBUser(credential.user.uid, fullname, email, phomenumber);
 
-        firebaseRef(FirebaseRef.user).add(user.toMap());
+        firebaseRef(FirebaseRef.user)
+            .doc(credential.user.uid)
+            .set(user.toMap());
+
         notifyListeners();
+        onSuccess(user);
       }
-    } catch (e) {
-      print(e);
+    } catch (error) {
+      onFail(error);
     }
   }
 }

@@ -4,10 +4,15 @@ import 'package:flutter_ub/app/extension/brand_colors.dart';
 class CustomButton extends StatelessWidget {
   const CustomButton({
     Key key,
+    this.height = 50,
+    @required this.width,
     @required this.title,
+    @required this.onPressed,
     this.backColor = BrandColors.colorGreen,
-    this.onPressed,
   }) : super(key: key);
+
+  final double height;
+  final double width;
 
   final String title;
   final Color backColor;
@@ -15,57 +20,43 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: backColor,
-        onPrimary: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: backColor,
+          onPrimary: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
         ),
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.white),
+        ),
+        onPressed: onPressed,
       ),
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: onPressed,
     );
   }
 }
 
-class CustomTextFields extends StatelessWidget {
-  const CustomTextFields({
-    Key key,
-    @required this.title,
-    this.isSecure = false,
-    @required this.onChangged,
-    @required this.validator,
-  }) : super(key: key);
-
-  final String title;
-  final bool isSecure;
-
-  final FormFieldValidator<String> validator;
-  final ValueChanged<String> onChangged;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: isSecure,
-      decoration: InputDecoration(
-        labelText: title,
-        labelStyle: TextStyle(
-          fontSize: 14,
-        ),
-        hintStyle: TextStyle(
-          color: Colors.grey,
-          fontSize: 10,
-        ),
-      ),
-      style: TextStyle(
-        fontSize: 14,
-      ),
-      validator: validator,
-      onChanged: onChangged,
-    );
-  }
+Future showErrorDialog(BuildContext context, error) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text("Error"),
+        content: Text("${error.message} Error"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
 }

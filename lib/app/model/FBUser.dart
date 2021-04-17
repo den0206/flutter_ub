@@ -1,10 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FBUser {
   FBUser(this.id, this.fullname, this.email, this.phone);
 
-  final String id;
-  final String fullname;
-  final String email;
-  final int phone;
+  FBUser.fromDocument(DocumentSnapshot document) {
+    id = document.id;
+    fullname = document.data()[UserKey.fullname] as String;
+    email = document.data()[UserKey.email] as String;
+    phone = document.data()[UserKey.phone] as int;
+  }
+
+  String id;
+  String fullname;
+  String email;
+  int phone;
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/provider/loginModel.dart';
-import 'package:flutter_ub/app/ui/signup_page.dart';
+import 'package:flutter_ub/app/provider/userState.dart';
+import 'package:flutter_ub/app/ui/SignupPage.dart';
+import 'package:flutter_ub/app/widgets/custom_textFields.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +42,7 @@ class LoginPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 Consumer<LoginModel>(
-                  builder: (context, model, child) {
+                  builder: (_, model, child) {
                     return Form(
                       key: _formKey,
                       child: Padding(
@@ -48,46 +50,39 @@ class LoginPage extends StatelessWidget {
                         child: Column(
                           children: [
                             CustomTextFields(
-                              title: "Email",
-                              onChangged: (value) => model.email,
-                              validator: (value) {},
+                              type: CustomTextType.email,
+                              onChangged: (value) => model.email = value,
                             ),
                             SizedBox(
                               height: 10,
                             ),
                             CustomTextFields(
-                              title: "Psssword",
-                              isSecure: true,
+                              type: CustomTextType.password,
                               onChangged: (value) => model.password = value,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return "Please add in a Passwrod";
-                                } else if (value.length < 6) {
-                                  return "More Long Password(6)";
-                                } else {
-                                  return null;
-                                }
-                              },
                             ),
                             SizedBox(
                               height: 40,
                             ),
-                            SizedBox(
-                              height: 50,
+                            CustomButton(
                               width: MediaQuery.of(context).size.width - 100,
-                              child: CustomButton(
-                                title: "Login",
-                                onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    model.loginUser();
-                                  }
-                                },
-                              ),
+                              title: "Login",
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  model.loginUser(onSuccess: (uid) {
+                                    final userState = Provider.of<UserState>(
+                                        context,
+                                        listen: false);
+
+                                    userState.setUser(uid: uid);
+                                  }, onFail: (error) {
+                                    showErrorDialog(context, error);
+                                  });
+                                }
+                              },
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, SignUpPage.id, (route) => false);
+                                Navigator.of(context).pushNamed(SignUpPage.id);
                               },
                               child: Text(
                                 "sign up here",
