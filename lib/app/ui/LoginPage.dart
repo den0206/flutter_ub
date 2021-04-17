@@ -68,13 +68,23 @@ class LoginPage extends StatelessWidget {
                               title: "Login",
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
+                                  // showDialog(
+                                  //   barrierDismissible: false,
+                                  //   context: context,
+                                  //   builder: (context) => ProgressDialog(
+                                  //     status: "Loading",
+                                  //   ),
+                                  // );
+
                                   model.loginUser(onSuccess: (uid) {
                                     final userState = Provider.of<UserState>(
                                         context,
                                         listen: false);
+                                    Navigator.pop(context);
 
                                     userState.setUser(uid: uid);
                                   }, onFail: (error) {
+                                    Navigator.pop(context);
                                     showErrorDialog(context, error);
                                   });
                                 }
