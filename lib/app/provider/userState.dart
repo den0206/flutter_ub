@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/firebaseref.dart';
+import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
 
 class UserState extends ChangeNotifier {
   FBUser currentUser;
+  Address pickupAddress;
+
   final _auth = FirebaseAuth.instance;
 
   UserState() {
@@ -33,6 +36,11 @@ class UserState extends ChangeNotifier {
   Future logout() async {
     currentUser = null;
     await FirebaseAuth.instance.signOut();
+    notifyListeners();
+  }
+
+  void updatePickupAddress(Address address) {
+    pickupAddress = address;
     notifyListeners();
   }
 }
