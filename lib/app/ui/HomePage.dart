@@ -6,6 +6,7 @@ import 'package:flutter_ub/app/extension/brand_colors.dart';
 import 'package:flutter_ub/app/provider/MainModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
+import 'package:flutter_ub/app/ui/SearchPage.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -114,9 +115,19 @@ class _MainSheet extends StatelessWidget {
                 '"Where are you going"',
                 style: TextStyle(fontSize: 18, fontFamily: "Brand-Bold"),
               ),
-              SearchPanel(
-                icon: Icons.search,
-                title: "Search Destination",
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchPage(),
+                    ),
+                  );
+                },
+                child: SearchPanel(
+                  icon: Icons.search,
+                  title: "Search Destination",
+                ),
               ),
               SizedBox(
                 height: 22,
