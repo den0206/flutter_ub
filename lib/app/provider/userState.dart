@@ -7,6 +7,7 @@ import 'package:flutter_ub/app/model/FBUser.dart';
 class UserState extends ChangeNotifier {
   FBUser currentUser;
   Address pickupAddress;
+  Address destinationAddress;
 
   final _auth = FirebaseAuth.instance;
 
@@ -26,8 +27,6 @@ class UserState extends ChangeNotifier {
       final doc = await firebaseRef(FirebaseRef.user).doc(userId).get();
 
       currentUser = FBUser.fromDocument(doc);
-
-      notifyListeners();
     } else {
       print("No User");
     }
@@ -41,6 +40,10 @@ class UserState extends ChangeNotifier {
 
   void updatePickupAddress(Address address) {
     pickupAddress = address;
-    notifyListeners();
+  }
+
+  void updateDistinationAddress(Address address) {
+    destinationAddress = address;
+    print(destinationAddress.placeName);
   }
 }
