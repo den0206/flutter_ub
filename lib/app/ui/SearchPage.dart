@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
-import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/model/Prediction.dart';
 import 'package:flutter_ub/app/provider/SearchPageModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
@@ -19,7 +18,7 @@ class SearchPage extends StatelessWidget {
       child: Scaffold(
         body: Consumer<SearchPageModel>(
           builder: (context, model, child) {
-            model.pickUpController.text = userState.pickupAddress.placeName;
+            model.pickUpController.text = userState.pickupAddress?.placeName;
             model.setFocus(context);
 
             return Column(
@@ -138,6 +137,8 @@ class PredictionCell extends StatelessWidget {
           placeId: prediction.placeId,
           onSuccess: () {
             Navigator.pop(context);
+
+            Navigator.of(context).pop("getDirection");
           },
         );
       },

@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
-import 'package:flutter_ub/app/provider/MainModel.dart';
+import 'package:flutter_ub/app/provider/HomeModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
 import 'package:flutter_ub/app/ui/SearchPage.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -20,50 +21,181 @@ class HomePage extends StatelessWidget {
   final double sheetHeight = (Platform.isIOS) ? 300 : 275;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Completer<GoogleMapController> _controller = Completer();
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MainPageModel>(
-      create: (context) => MainPageModel(sheetHeight: sheetHeight),
+    return ChangeNotifierProvider<HomeModel>(
+      create: (context) => HomeModel(sheetHeight: sheetHeight),
       child: Scaffold(
         key: scaffoldKey,
         drawer: _MainDrawer(),
-        body: Stack(
-          children: [
-            Consumer<MainPageModel>(
-              builder: (context, model, child) {
-                return GoogleMap(
-                  padding: EdgeInsets.only(bottom: model.mapBottomPadding),
-                  mapType: MapType.normal,
-                  myLocationButtonEnabled: true,
-                  myLocationEnabled: true,
-                  zoomGesturesEnabled: true,
-                  zoomControlsEnabled: true,
-                  initialCameraPosition: model.kLake,
-                  onMapCreated: (controller) {
-                    _controller.complete(controller);
-                    model.mapController = controller;
+        body: Consumer<HomeModel>(
+          builder: (context, model, child) {
+            return Stack(
+              children: [
+                _MainGmap(model: model),
 
-                    model.changePadding();
-                    model.setPositionLocator(
-                      onSuccess: (address) {
-                        Provider.of<UserState>(context, listen: false)
-                            .updatePickupAddress(address);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+                _DrawerButton(scaffoldKey: scaffoldKey),
 
-            _DrawerButton(scaffoldKey: scaffoldKey),
-
-            /// sheet
-            _MainSheet(sheetHeight: sheetHeight)
-          ],
+                /// sheet
+                _MainSheet(
+                  sheetHeight: sheetHeight,
+                  model: model,
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 15,
+                          spreadRadius: 0.5,
+                          offset: Offset(0.7, 0.7),
+                        ),
+                      ],
+                    ),
+                    height: 260,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            color: BrandColors.colorAccent1,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "images/taxi.png",
+                                    height: 70,
+                                    width: 70,
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "Taxi",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: "Brand-bold",
+                                        ),
+                                      ),
+                                      Text(
+                                        "KM",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: BrandColors.colorDimText,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    "\$100",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: "Brand-bold",
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 22,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Icon(
+                                FontAwesomeIcons.moneyBillAlt,
+                                size: 18,
+                                color: BrandColors.colorTextLight,
+                              ),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Text("Cash"),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 18,
+                                color: BrandColors.colorTextLight,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 22,
+                          ),
+                          CustomButton(
+                              width: double.infinity,
+                              title: "Request CAB",
+                              onPressed: () {})
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+class _MainGmap extends StatelessWidget {
+  _MainGmap({
+    Key key,
+    @required this.model,
+  }) : super(
+          key: key,
+        );
+
+  final Completer<GoogleMapController> _controller = Completer();
+  final HomeModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GoogleMap(
+      padding: EdgeInsets.only(bottom: model.mapBottomPadding),
+      mapType: MapType.normal,
+      myLocationButtonEnabled: true,
+      myLocationEnabled: true,
+      zoomGesturesEnabled: true,
+      zoomControlsEnabled: true,
+      initialCameraPosition: model.kLake,
+      polylines: model.polylines,
+      markers: model.markers,
+      circles: model.circles,
+      onMapCreated: (controller) {
+        _controller.complete(controller);
+        model.mapController = controller;
+
+        model.changePadding();
+        model.setPositionLocator(
+          onSuccess: (address) {
+            Provider.of<UserState>(context, listen: false)
+                .updatePickupAddress(address);
+          },
+        );
+      },
     );
   }
 }
@@ -72,9 +204,11 @@ class _MainSheet extends StatelessWidget {
   const _MainSheet({
     Key key,
     @required this.sheetHeight,
+    @required this.model,
   }) : super(key: key);
 
   final double sheetHeight;
+  final HomeModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -116,13 +250,18 @@ class _MainSheet extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontFamily: "Brand-Bold"),
               ),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  var response = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => SearchPage(),
                     ),
                   );
+
+                  if (response == "getDirection") {
+                    model.getDirection(
+                        Provider.of<UserState>(context, listen: false));
+                  }
                 },
                 child: SearchPanel(
                   icon: Icons.search,

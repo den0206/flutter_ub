@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/sec.dart';
-import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/helpers/requestHelper.dart';
 import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/Prediction.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SearchPageModel extends ChangeNotifier {
   SearchPageModel(
@@ -28,7 +26,7 @@ class SearchPageModel extends ChangeNotifier {
   void searchPlace(String placeName) async {
     if (placeName.isNotEmpty) {
       String url =
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=${SDKMapKey.iosKey}&sessiontoken=1234567890&components=country:ng";
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=${SDKMapKey.iosKey}&sessiontoken=1234567890&components=country:us";
 
       var response = await RequestHelper.getRequest(url);
 
@@ -69,7 +67,6 @@ class SearchPageModel extends ChangeNotifier {
 
       /// pass Userstatus
       _userState.updateDistinationAddress(thisPlace);
-
       onSuccess();
     }
   }
