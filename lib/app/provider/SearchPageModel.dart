@@ -59,11 +59,7 @@ class SearchPageModel extends ChangeNotifier {
     }
 
     if (response["status"] == "OK") {
-      Address thisPlace = Address();
-      thisPlace.placeName = response["result"]["name"];
-      thisPlace.placeId = placeId;
-      thisPlace.latitude = response["result"]["geometry"]["location"]["lat"];
-      thisPlace.longtude = response["result"]["geometry"]["location"]["lng"];
+      Address thisPlace = Address.fromJson(response, placeId);
 
       /// pass Userstatus
       _userState.updateDistinationAddress(thisPlace);
@@ -71,3 +67,9 @@ class SearchPageModel extends ChangeNotifier {
     }
   }
 }
+
+// Address thisPlace = Address();
+// thisPlace.placeName = response["result"]["name"];
+// thisPlace.placeId = placeId;
+// thisPlace.latitude = response["result"]["geometry"]["location"]["lat"];
+// thisPlace.longtude = response["result"]["geometry"]["location"]["lng"];

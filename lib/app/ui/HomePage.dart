@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
+import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/provider/HomeModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
@@ -19,6 +21,7 @@ class HomePage extends StatelessWidget {
   }) : super(key: key);
 
   final double sheetHeight = (Platform.isIOS) ? 300 : 275;
+
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -32,128 +35,219 @@ class HomePage extends StatelessWidget {
           builder: (context, model, child) {
             return Stack(
               children: [
+                /// google map
                 _MainGmap(model: model),
 
-                _DrawerButton(scaffoldKey: scaffoldKey),
+                _DrawerButton(
+                  model: model,
+                  scaffoldKey: scaffoldKey,
+                  sheetHeight: sheetHeight,
+                ),
 
                 /// sheet
                 _MainSheet(
-                  sheetHeight: sheetHeight,
                   model: model,
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          offset: Offset(0.7, 0.7),
-                        ),
-                      ],
-                    ),
-                    height: 260,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            color: BrandColors.colorAccent1,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "images/taxi.png",
-                                    height: 70,
-                                    width: 70,
-                                  ),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Taxi",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontFamily: "Brand-bold",
-                                        ),
-                                      ),
-                                      Text(
-                                        "KM",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: BrandColors.colorDimText,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "\$100",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Brand-bold",
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 22,
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 16,
-                              ),
-                              Icon(
-                                FontAwesomeIcons.moneyBillAlt,
-                                size: 18,
-                                color: BrandColors.colorTextLight,
-                              ),
-                              SizedBox(
-                                width: 16,
-                              ),
-                              Text("Cash"),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 18,
-                                color: BrandColors.colorTextLight,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 22,
-                          ),
-                          CustomButton(
-                              width: double.infinity,
-                              title: "Request CAB",
-                              onPressed: () {})
-                        ],
-                      ),
-                    ),
-                  ),
+                _RideDetailSheet(
+                  model: model,
+                ),
+
+                _RequestSheet(
+                  model: model,
                 )
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _RequestSheet extends StatelessWidget {
+  _RequestSheet({
+    Key key,
+    @required this.model,
+  }) : super(key: key);
+
+  final HomeModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        decoration: kBoxDecoration,
+        height: model.requestingSheetHeight,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: TextLiquidFill(
+                    text: 'Request Ride...',
+                    waveColor: BrandColors.colorTextSemiLight,
+                    boxBackgroundColor: Colors.white,
+                    textStyle: TextStyle(
+                      fontSize: 22,
+                      fontFamily: "Brand-Bold",
+                    ),
+                    boxHeight: 40),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    width: 1,
+                    color: BrandColors.colorLightGrayFair,
+                  ),
+                ),
+                child: Icon(
+                  Icons.close,
+                  size: 25,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: double.infinity,
+                child: Text(
+                  "Cancel",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RideDetailSheet extends StatelessWidget {
+  _RideDetailSheet({
+    Key key,
+    @required this.model,
+  }) : super(key: key);
+
+  final HomeModel model;
+  final double requestSheetHeight = (Platform.isIOS) ? 220 : 195;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        decoration: kBoxDecoration,
+        height: model.rideSectionSheetHeight,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                color: BrandColors.colorAccent1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        "images/taxi.png",
+                        height: 70,
+                        width: 70,
+                      ),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "Taxi",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: "Brand-bold",
+                            ),
+                          ),
+                          Text(
+                            (model.directionDetails != null)
+                                ? model.directionDetails.distanceText
+                                : "Can'T Get",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: BrandColors.colorDimText,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Text(
+                        (model.directionDetails != null)
+                            ? "\$ ${HelperMethod.estimateFares(model.directionDetails)}"
+                            : "Can'T Get",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "Brand-bold",
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 22,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Icon(
+                    FontAwesomeIcons.moneyBillAlt,
+                    size: 18,
+                    color: BrandColors.colorTextLight,
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Text("Cash"),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: BrandColors.colorTextLight,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 22,
+              ),
+              CustomButton(
+                  width: double.infinity,
+                  title: "Request CAB",
+                  onPressed: () {
+                    model.showRequestSheet(requestSheetHeight);
+                  })
+            ],
+          ),
         ),
       ),
     );
@@ -180,7 +274,7 @@ class _MainGmap extends StatelessWidget {
       myLocationEnabled: true,
       zoomGesturesEnabled: true,
       zoomControlsEnabled: true,
-      initialCameraPosition: model.kLake,
+      initialCameraPosition: firsrCameraPostion,
       polylines: model.polylines,
       markers: model.markers,
       circles: model.circles,
@@ -201,14 +295,15 @@ class _MainGmap extends StatelessWidget {
 }
 
 class _MainSheet extends StatelessWidget {
-  const _MainSheet({
+  _MainSheet({
     Key key,
-    @required this.sheetHeight,
     @required this.model,
   }) : super(key: key);
 
-  final double sheetHeight;
   final HomeModel model;
+
+  final double rideDetailSheetHeight = (Platform.isIOS) ? 235 : 260;
+  final double mapPadding = (Platform.isIOS) ? 230 : 240;
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +312,7 @@ class _MainSheet extends StatelessWidget {
       right: 0,
       bottom: 0,
       child: Container(
-        height: sheetHeight,
+        height: model.sheetHeight,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -259,8 +354,13 @@ class _MainSheet extends StatelessWidget {
                   );
 
                   if (response == "getDirection") {
-                    model.getDirection(
-                        Provider.of<UserState>(context, listen: false));
+                    // model.getDirection(
+                    //     Provider.of<UserState>(context, listen: false));
+
+                    model.showDetailSheet(
+                        Provider.of<UserState>(context, listen: false),
+                        rideDetailSheetHeight,
+                        mapPadding);
                   }
                 },
                 child: SearchPanel(
@@ -299,10 +399,14 @@ class _MainSheet extends StatelessWidget {
 class _DrawerButton extends StatelessWidget {
   const _DrawerButton({
     Key key,
+    @required this.model,
     @required this.scaffoldKey,
+    @required this.sheetHeight,
   }) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final HomeModel model;
+  final double sheetHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -311,7 +415,11 @@ class _DrawerButton extends StatelessWidget {
       left: 20,
       child: GestureDetector(
         onTap: () {
-          scaffoldKey.currentState.openDrawer();
+          if (model.drawerOpen) {
+            scaffoldKey.currentState.openDrawer();
+          } else {
+            model.dismissDetailSheet(sheetHeight);
+          }
         },
         child: Container(
           decoration: BoxDecoration(
@@ -328,7 +436,7 @@ class _DrawerButton extends StatelessWidget {
           ),
           child: CircleAvatar(
             child: Icon(
-              Icons.menu,
+              model.drawerOpen ? Icons.menu : Icons.arrow_back,
               color: Colors.black87,
             ),
             radius: 20,
@@ -565,7 +673,7 @@ class FirstView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(child: Text("alreadya")),
-          if (auth.currentUser != null) Text(auth.currentUser.id),
+          if (currentUser != null) Text(currentUser.id),
           CustomButton(
             width: 100,
             title: "logout",

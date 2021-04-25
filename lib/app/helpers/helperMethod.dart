@@ -45,24 +45,21 @@ class HelperMethod {
     var response = await RequestHelper.getRequest(url);
 
     if (response == "fail") {
-      print("Fail");
       return null;
     }
 
-    DirectionDetails directionDetails = DirectionDetails();
-    directionDetails.durationText =
-        response["routes"][0]["legs"][0]["duration"]["text"];
-    directionDetails.durationValue =
-        response["routes"][0]["legs"][0]["duration"]["value"];
-
-    directionDetails.distanceText =
-        response["routes"][0]["legs"][0]["distance"]["text"];
-    directionDetails.distanceValue =
-        response["routes"][0]["legs"][0]["distance"]["value"];
-
-    directionDetails.encodedPoints =
-        response["routes"][0]["overview_polyline"]["points"];
+    DirectionDetails directionDetails = DirectionDetails.fromJson(response);
 
     return directionDetails;
+  }
+
+  static int estimateFares(DirectionDetails details) {
+    double baseFare = 3;
+    double distanceFare = (details.distanceValue / 1000) * 0.3;
+    double timeFare = (details.distanceValue / 60) * 0.2;
+
+    double totalFare = baseFare + distanceFare + timeFare;
+
+    return totalFare.truncate();
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
 
 class UserState extends ChangeNotifier {
-  FBUser currentUser;
+  // FBUser currentUser;
   Address pickupAddress;
   Address destinationAddress;
 
@@ -23,7 +23,6 @@ class UserState extends ChangeNotifier {
   Future setUser({String uid}) async {
     final userId = uid ?? _auth.currentUser.uid;
     if (userId != null) {
-      print("Set user");
       final doc = await firebaseRef(FirebaseRef.user).doc(userId).get();
 
       currentUser = FBUser.fromDocument(doc);
@@ -47,3 +46,6 @@ class UserState extends ChangeNotifier {
     print(destinationAddress.placeName);
   }
 }
+
+/// For Global
+FBUser currentUser;

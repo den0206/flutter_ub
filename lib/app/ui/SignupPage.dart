@@ -81,11 +81,11 @@ class SignUpPage extends StatelessWidget {
                                 if (_formKey.currentState.validate()) {
                                   model.registerUser(
                                     onSuccess: (user) {
-                                      final userState = Provider.of<UserState>(
-                                          context,
-                                          listen: false);
+                                      // final userState = Provider.of<UserState>(
+                                      //     context,
+                                      //     listen: false);
 
-                                      userState.currentUser = user;
+                                      currentUser = user;
                                       Navigator.of(context).pop();
                                     },
                                     onFail: (error) {

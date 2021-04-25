@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
+import 'package:flutter_ub/app/extension/firebaseref.dart';
 import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/model/Address.dart';
+import 'package:flutter_ub/app/model/DirectionDetails.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,19 +14,18 @@ class HomeModel extends ChangeNotifier {
     @required this.sheetHeight,
   });
 
-  final double sheetHeight;
-  GoogleMapController mapController;
-  double mapBottomPadding = 0;
+  double sheetHeight;
+  double rideSectionSheetHeight = 0;
+  double requestingSheetHeight = 0;
 
-  /// initial position
-  final CameraPosition kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  GoogleMapController mapController;
+  DirectionDetails directionDetails;
+  double mapBottomPadding = 0;
 
   var geoLocator = Geolocator();
   Position currentPosition;
+
+  bool drawerOpen = true;
 
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
@@ -55,18 +56,67 @@ class HomeModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void showDetailSheet(
+    UserState userState,
+    double rideHeight,
+    double mapPadding,
+  ) async {
+    await getDirection(userState);
+
+    drawerOpen = false;
+    sheetHeight = 0;
+    rideSectionSheetHeight = rideHeight;
+    mapBottomPadding = rideSectionSheetHeight - 30;
+
+    notifyListeners();
+  }
+
+  void dismissDetailSheet(double setHeight) {
+    drawerOpen = true;
+    sheetHeight = setHeight;
+    rideSectionSheetHeight = 0;
+    mapBottomPadding = sheetHeight - 30;
+
+    dismissGmapPer();
+
+    setPositionLocator();
+
+    notifyListeners();
+  }
+
+  dismissGmapPer() {
+    polylines.clear();
+    polylineCoordinates.clear();
+    markers.clear();
+    circles.clear();
+  }
+
+  showRequestSheet(double setHeight) {
+    drawerOpen = true;
+    rideSectionSheetHeight = 0;
+    requestingSheetHeight = setHeight;
+    mapBottomPadding = requestingSheetHeight - 30;
+
+    notifyListeners();
+  }
+
   Future<void> getDirection(UserState userState) async {
     var pickup = userState.pickupAddress;
     var destination = userState.destinationAddress;
 
     var pickupLating = LatLng(pickup.latitude, pickup.longtude);
     var destinationLating = LatLng(destination.latitude, destination.longtude);
+
+    /// get Direction Details
     var details =
         await HelperMethod.getDirectionDetails(pickupLating, destinationLating);
+    directionDetails = details;
 
     PolylinePoints polylinePoints = PolylinePoints();
 
-    polylineCoordinates.clear();
+    // polylineCoordinates.clear();
+
+    dismissGmapPer();
 
     List<PointLatLng> results =
         polylinePoints.decodePolyline(details.encodedPoints);
@@ -78,7 +128,7 @@ class HomeModel extends ChangeNotifier {
       });
     }
 
-    polylines.clear();
+    // polylines.clear();
 
     Polyline polyline = Polyline(
       polylineId: PolylineId("polyid"),
@@ -155,5 +205,11 @@ class HomeModel extends ChangeNotifier {
     circles.add(destinationCircle);
 
     notifyListeners();
+  }
+
+  void createRideRequest() {
+    final Map<String, dynamic> value = {};
+
+    firebaseRef(FirebaseRef.ride).add(value);
   }
 }
