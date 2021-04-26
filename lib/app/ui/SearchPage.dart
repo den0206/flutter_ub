@@ -18,7 +18,7 @@ class SearchPage extends StatelessWidget {
       child: Scaffold(
         body: Consumer<SearchPageModel>(
           builder: (context, model, child) {
-            model.pickUpController.text = userState.pickupAddress?.placeName;
+            model.pickUpController.text = pickupAddress?.placeName;
             model.setFocus(context);
 
             return Column(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
@@ -6,21 +7,20 @@ import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/DirectionDetails.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
+import 'package:flutter_ub/app/style/style.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeModel extends ChangeNotifier {
-  HomeModel({
-    @required this.sheetHeight,
-  });
-
-  double sheetHeight;
+  double sheetHeight = ksheetHeight;
   double rideSectionSheetHeight = 0;
   double requestingSheetHeight = 0;
 
   GoogleMapController mapController;
   DirectionDetails directionDetails;
   double mapBottomPadding = 0;
+
+  DocumentReference _requestRef;
 
   var geoLocator = Geolocator();
   Position currentPosition;
@@ -58,23 +58,22 @@ class HomeModel extends ChangeNotifier {
 
   void showDetailSheet(
     UserState userState,
-    double rideHeight,
-    double mapPadding,
   ) async {
     await getDirection(userState);
 
     drawerOpen = false;
     sheetHeight = 0;
-    rideSectionSheetHeight = rideHeight;
+    rideSectionSheetHeight = krideDetailSheetHeight;
     mapBottomPadding = rideSectionSheetHeight - 30;
 
     notifyListeners();
   }
 
-  void dismissDetailSheet(double setHeight) {
+  void resetApp() {
     drawerOpen = true;
-    sheetHeight = setHeight;
+    sheetHeight = ksheetHeight;
     rideSectionSheetHeight = 0;
+    requestingSheetHeight = 0;
     mapBottomPadding = sheetHeight - 30;
 
     dismissGmapPer();
@@ -91,18 +90,19 @@ class HomeModel extends ChangeNotifier {
     circles.clear();
   }
 
-  showRequestSheet(double setHeight) {
+  showRequestSheet() {
     drawerOpen = true;
     rideSectionSheetHeight = 0;
-    requestingSheetHeight = setHeight;
+    requestingSheetHeight = krequestSheetHeight;
     mapBottomPadding = requestingSheetHeight - 30;
 
+    createRideRequest();
     notifyListeners();
   }
 
   Future<void> getDirection(UserState userState) async {
-    var pickup = userState.pickupAddress;
-    var destination = userState.destinationAddress;
+    var pickup = pickupAddress;
+    var destination = destinationAddress;
 
     var pickupLating = LatLng(pickup.latitude, pickup.longtude);
     var destinationLating = LatLng(destination.latitude, destination.longtude);
@@ -208,8 +208,33 @@ class HomeModel extends ChangeNotifier {
   }
 
   void createRideRequest() {
-    final Map<String, dynamic> value = {};
+    Map pickupMap = {
+      "latitude": pickupAddress.latitude.toString(),
+      "longtude": pickupAddress.longtude.toString(),
+    };
 
-    firebaseRef(FirebaseRef.ride).add(value);
+    Map destinationMap = {
+      "latitude": destinationAddress.latitude.toString(),
+      "longtude": destinationAddress.longtude.toString(),
+    };
+    final Map<String, dynamic> value = {
+      "createdAt": DateTime.now(),
+      "rider_name": currentUser.fullname,
+      "pickup_address": pickupAddress.placeName,
+      "destination_address": destinationAddress.placeName,
+      "location": pickupMap,
+      "destination": destinationMap,
+      "payment_method": "cash",
+      "driver_id": "waiting",
+    };
+
+    _requestRef = firebaseRef(FirebaseRef.ride).doc();
+    _requestRef.set(value).whenComplete(() {
+      print("add request");
+    });
+  }
+
+  void cancelRequest() {
+    _requestRef.delete();
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +19,12 @@ class HomePage extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final double sheetHeight = (Platform.isIOS) ? 300 : 275;
-
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeModel>(
-      create: (context) => HomeModel(sheetHeight: sheetHeight),
+      create: (context) => HomeModel(),
       child: Scaffold(
         key: scaffoldKey,
         drawer: _MainDrawer(),
@@ -41,7 +38,6 @@ class HomePage extends StatelessWidget {
                 _DrawerButton(
                   model: model,
                   scaffoldKey: scaffoldKey,
-                  sheetHeight: sheetHeight,
                 ),
 
                 /// sheet
@@ -104,18 +100,24 @@ class _RequestSheet extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    width: 1,
-                    color: BrandColors.colorLightGrayFair,
+              GestureDetector(
+                onTap: () {
+                  model.cancelRequest();
+                  model.resetApp();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      width: 1,
+                      color: BrandColors.colorLightGrayFair,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  Icons.close,
-                  size: 25,
+                  child: Icon(
+                    Icons.close,
+                    size: 25,
+                  ),
                 ),
               ),
               SizedBox(
@@ -146,7 +148,6 @@ class _RideDetailSheet extends StatelessWidget {
   }) : super(key: key);
 
   final HomeModel model;
-  final double requestSheetHeight = (Platform.isIOS) ? 220 : 195;
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +245,7 @@ class _RideDetailSheet extends StatelessWidget {
                   width: double.infinity,
                   title: "Request CAB",
                   onPressed: () {
-                    model.showRequestSheet(requestSheetHeight);
+                    model.showRequestSheet();
                   })
             ],
           ),
@@ -302,9 +303,6 @@ class _MainSheet extends StatelessWidget {
 
   final HomeModel model;
 
-  final double rideDetailSheetHeight = (Platform.isIOS) ? 235 : 260;
-  final double mapPadding = (Platform.isIOS) ? 230 : 240;
-
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -358,9 +356,8 @@ class _MainSheet extends StatelessWidget {
                     //     Provider.of<UserState>(context, listen: false));
 
                     model.showDetailSheet(
-                        Provider.of<UserState>(context, listen: false),
-                        rideDetailSheetHeight,
-                        mapPadding);
+                      Provider.of<UserState>(context, listen: false),
+                    );
                   }
                 },
                 child: SearchPanel(
@@ -401,12 +398,10 @@ class _DrawerButton extends StatelessWidget {
     Key key,
     @required this.model,
     @required this.scaffoldKey,
-    @required this.sheetHeight,
   }) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
   final HomeModel model;
-  final double sheetHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -418,7 +413,7 @@ class _DrawerButton extends StatelessWidget {
           if (model.drawerOpen) {
             scaffoldKey.currentState.openDrawer();
           } else {
-            model.dismissDetailSheet(sheetHeight);
+            model.resetApp();
           }
         },
         child: Container(

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 final kDrawerItemStyle = TextStyle(fontSize: 16);
+
 final kBoxDecoration = BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.only(
@@ -23,3 +26,8 @@ final CameraPosition firsrCameraPostion = CameraPosition(
     target: LatLng(37.43296265331129, -122.08832357078792),
     tilt: 59.440717697143555,
     zoom: 19.151926040649414);
+
+/// sheet Heights
+final double ksheetHeight = (Platform.isIOS) ? 300 : 275;
+final double krideDetailSheetHeight = (Platform.isIOS) ? 235 : 260;
+final double krequestSheetHeight = (Platform.isIOS) ? 220 : 195;

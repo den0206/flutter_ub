@@ -6,8 +6,8 @@ import 'package:flutter_ub/app/model/FBUser.dart';
 
 class UserState extends ChangeNotifier {
   // FBUser currentUser;
-  Address pickupAddress;
-  Address destinationAddress;
+  // Address pickupAddress;
+  // Address destinationAddress;
 
   final _auth = FirebaseAuth.instance;
 
@@ -49,3 +49,5 @@ class UserState extends ChangeNotifier {
 
 /// For Global
 FBUser currentUser;
+Address pickupAddress;
+Address destinationAddress;
