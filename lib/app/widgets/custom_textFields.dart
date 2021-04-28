@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ub/app/extension/validation.dart';
 
-enum CustomTextType {
-  fullname,
-  email,
-  password,
-  phone,
-}
+enum CustomTextType { fullname, email, password, phone, vehicle }
 
 extension CustomTextExtension on CustomTextType {
   String get title {
@@ -20,6 +15,8 @@ extension CustomTextExtension on CustomTextType {
         return "Fullname";
       case CustomTextType.phone:
         return "Phone";
+      case CustomTextType.vehicle:
+        return "Car Model";
       default:
         return "";
     }
@@ -35,6 +32,8 @@ extension CustomTextExtension on CustomTextType {
         return valideName;
       case CustomTextType.phone:
         return validPhone;
+      case CustomTextType.vehicle:
+        return validVehilcle;
       default:
         return null;
     }
@@ -58,6 +57,9 @@ extension CustomTextExtension on CustomTextType {
 
       case CustomTextType.phone:
         return TextInputType.phone;
+
+      case CustomTextType.vehicle:
+        return TextInputType.text;
       default:
         return null;
     }

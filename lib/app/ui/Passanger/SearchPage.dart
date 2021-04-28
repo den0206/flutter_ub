@@ -21,91 +21,93 @@ class SearchPage extends StatelessWidget {
             model.pickUpController.text = pickupAddress?.placeName;
             model.setFocus(context);
 
-            return Column(
-              children: [
-                Container(
-                  height: 240,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 5,
-                        spreadRadius: 0.5,
-                        offset: Offset(0.7, 0.7),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 40),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 5,
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 240,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 5,
+                          spreadRadius: 0.5,
+                          offset: Offset(0.7, 0.7),
                         ),
-                        Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Icon(Icons.arrow_back),
-                            ),
-                            Center(
-                              child: Text(
-                                "Set Destination",
-                                style: TextStyle(
-                                    fontSize: 20, fontFamily: "Brand-Bold"),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 18,
-                        ),
-                        SearchTextField(
-                          controller: model.pickUpController,
-                          iconPath: "images/pickicon.png",
-                          hintText: "Place Location",
-                        ),
-                        SizedBox(
-                          height: 18,
-                        ),
-                        SearchTextField(
-                          focus: model.focusDestination,
-                          controller: model.destinationController,
-                          iconPath: "images/desticon.png",
-                          hintText: "Where To?",
-                          onChange: (value) {
-                            model.searchPlace(value);
-                          },
-                        ),
-                        Spacer(),
                       ],
                     ),
-                  ),
-                ),
-                if (model.predictionList.isNotEmpty)
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: ListView.separated(
-                      padding: EdgeInsets.all(0),
-                      itemBuilder: (context, index) {
-                        return PredictionCell(
-                          prediction: model.predictionList[index],
-                          model: model,
-                        );
-                      },
-                      separatorBuilder: (context, index) => BrandDivier(),
-                      itemCount: model.predictionList.length,
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 40),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Icon(Icons.arrow_back),
+                              ),
+                              Center(
+                                child: Text(
+                                  "Set Destination",
+                                  style: TextStyle(
+                                      fontSize: 20, fontFamily: "Brand-Bold"),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 18,
+                          ),
+                          SearchTextField(
+                            controller: model.pickUpController,
+                            iconPath: "images/pickicon.png",
+                            hintText: "Place Location",
+                          ),
+                          SizedBox(
+                            height: 18,
+                          ),
+                          SearchTextField(
+                            focus: model.focusDestination,
+                            controller: model.destinationController,
+                            iconPath: "images/desticon.png",
+                            hintText: "Where To?",
+                            onChange: (value) {
+                              model.searchPlace(value);
+                            },
+                          ),
+                          Spacer(),
+                        ],
+                      ),
                     ),
                   ),
-              ],
+                  if (model.predictionList.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      child: ListView.separated(
+                        padding: EdgeInsets.all(0),
+                        itemBuilder: (context, index) {
+                          return PredictionCell(
+                            prediction: model.predictionList[index],
+                            model: model,
+                          );
+                        },
+                        separatorBuilder: (context, index) => BrandDivier(),
+                        itemCount: model.predictionList.length,
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                      ),
+                    ),
+                ],
+              ),
             );
           },
         ),

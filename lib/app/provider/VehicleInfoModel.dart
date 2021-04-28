@@ -1,26 +1,23 @@
-import 'dart:async';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/firebaseref.dart';
+import 'package:flutter_ub/app/model/Car.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
+import 'package:flutter_ub/app/provider/signupModel.dart';
 
-class SignUpModel extends ChangeNotifier {
-  String email;
-  String password;
-  String fullname;
-  int phomenumber;
+class VehicleInfoModel extends ChangeNotifier {
+  VehicleInfoModel(this._signUpModel);
 
-  String typeString = UserType.Passanger.title;
-
-  UserType get type {
-    return convertType(typeString);
-  }
+  String carModel;
+  String carColor;
+  String carNumber;
 
   final _auth = FirebaseAuth.instance;
 
-  Future registerUser(
+  final SignUpModel _signUpModel;
+
+  Future registerDriver(
       {@required Function(FBUser) onSuccess, @required Function onFail}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -32,23 +29,38 @@ class SignUpModel extends ChangeNotifier {
 
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: _signUpModel.email, password: _signUpModel.password);
       print(credential.user.uid);
 
       if (credential.user != null) {
         FBUser user = FBUser(
           credential.user.uid,
-          fullname,
-          email,
-          phomenumber,
+          _signUpModel.fullname,
+          _signUpModel.email,
+          _signUpModel.phomenumber,
           convertType(
-            typeString,
+            _signUpModel.typeString,
           ),
         );
 
-        firebaseRef(FirebaseRef.user)
+        Car car = Car(
+          uid: credential.user.uid,
+          model: carModel,
+          color: carColor,
+          number: carNumber,
+        );
+
+        user.mycar = car;
+
+        await firebaseRef(FirebaseRef.user)
             .doc(credential.user.uid)
-            .set(user.toMap());
+            .set(user.toMap())
+            .whenComplete(() {
+          firebaseRef(FirebaseRef.user)
+              .doc(credential.user.uid)
+              .collection("Car")
+              .add(car.toMap());
+        });
 
         notifyListeners();
         onSuccess(user);
@@ -56,10 +68,5 @@ class SignUpModel extends ChangeNotifier {
     } catch (error) {
       onFail(error);
     }
-  }
-
-  chageValue(String value) {
-    typeString = value;
-    notifyListeners();
   }
 }

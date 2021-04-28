@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
+import 'package:flutter_ub/app/ui/BranchView.dart';
+import 'package:flutter_ub/app/ui/Driver/VehicleInfo.dart';
 import 'package:flutter_ub/app/ui/LoginPage.dart';
 import 'package:flutter_ub/app/ui/SignupPage.dart';
 import 'package:provider/provider.dart';
-
-import 'app/ui/HomePage.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginPage.id: (context) => LoginPage(),
             SignUpPage.id: (cotext) => SignUpPage(),
+            VehicleInfoPage.id: (context) => VehicleInfoPage(),
           }),
     );
   }
@@ -58,7 +59,7 @@ class RootPage extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
-          return HomePage();
+          return BranchView();
         }
 
         return LoginPage();

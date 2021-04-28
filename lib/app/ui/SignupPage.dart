@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ub/app/model/FBUser.dart';
 import 'package:flutter_ub/app/provider/signupModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
+import 'package:flutter_ub/app/style/style.dart';
+import 'package:flutter_ub/app/ui/Driver/VehicleInfo.dart';
 import 'package:flutter_ub/app/widgets/custom_textFields.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +49,17 @@ class SignUpPage extends StatelessWidget {
                         padding: EdgeInsets.all(20.0),
                         child: Column(
                           children: [
+                            CupertinoSlidingSegmentedControl(
+                              groupValue: model.typeString,
+                              thumbColor: Colors.white,
+                              children: const <String, Widget>{
+                                kPassanger: Text(kPassanger),
+                                kDriver: Text(kDriver),
+                              },
+                              onValueChanged: (value) {
+                                model.chageValue(value);
+                              },
+                            ),
                             CustomTextFields(
                               type: CustomTextType.fullname,
                               onChangged: (value) => model.fullname = value,
@@ -76,22 +91,27 @@ class SignUpPage extends StatelessWidget {
                             ),
                             CustomButton(
                               width: MediaQuery.of(context).size.width - 100,
-                              title: "Sign Up",
+                              title: model.type == UserType.Passanger
+                                  ? "Sign Up"
+                                  : "Proceed",
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
-                                  model.registerUser(
-                                    onSuccess: (user) {
-                                      // final userState = Provider.of<UserState>(
-                                      //     context,
-                                      //     listen: false);
-
-                                      currentUser = user;
-                                      Navigator.of(context).pop();
-                                    },
-                                    onFail: (error) {
-                                      showErrorDialog(context, error);
-                                    },
-                                  );
+                                  if (model.type == UserType.Passanger) {
+                                    model.registerUser(
+                                      onSuccess: (user) {
+                                        currentUser = user;
+                                        Navigator.of(context).pop();
+                                      },
+                                      onFail: (error) {
+                                        showErrorDialog(context, error);
+                                      },
+                                    );
+                                  } else {
+                                    print("Call");
+                                    Navigator.pushNamed(
+                                        context, VehicleInfoPage.id,
+                                        arguments: model);
+                                  }
                                 }
                               },
                             ),

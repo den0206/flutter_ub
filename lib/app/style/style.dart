@@ -27,6 +27,9 @@ final CameraPosition firsrCameraPostion = CameraPosition(
     tilt: 59.440717697143555,
     zoom: 19.151926040649414);
 
+const String kPassanger = "Passenger";
+const String kDriver = "Driver";
+
 /// sheet Heights
 final double ksheetHeight = (Platform.isIOS) ? 300 : 275;
 final double krideDetailSheetHeight = (Platform.isIOS) ? 235 : 260;

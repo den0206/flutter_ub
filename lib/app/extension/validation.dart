@@ -41,3 +41,13 @@ String validPhone(String value) {
     return null;
   }
 }
+
+String validVehilcle(String value) {
+  if (value.isEmpty) {
+    return "Please add in a Vehiclde";
+  } else if (value.length < 3) {
+    return "More Long 3";
+  } else {
+    return null;
+  }
+}

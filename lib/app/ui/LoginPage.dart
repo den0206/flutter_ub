@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/provider/loginModel.dart';
-import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/ui/SignupPage.dart';
 import 'package:flutter_ub/app/widgets/custom_textFields.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
@@ -77,12 +76,7 @@ class LoginPage extends StatelessWidget {
                                   // );
 
                                   model.loginUser(onSuccess: (uid) {
-                                    final userState = Provider.of<UserState>(
-                                        context,
-                                        listen: false);
-                                    Navigator.pop(context);
-
-                                    userState.setUser(uid: uid);
+                                    print("Success");
                                   }, onFail: (error) {
                                     Navigator.pop(context);
                                     showErrorDialog(context, error);

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/firebaseref.dart';
 import 'package:flutter_ub/app/model/Address.dart';
+import 'package:flutter_ub/app/model/Car.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
 
 class UserState extends ChangeNotifier {
@@ -11,10 +12,10 @@ class UserState extends ChangeNotifier {
 
   final _auth = FirebaseAuth.instance;
 
-  UserState() {
-    print("Init User state");
-    setUser();
-  }
+  // UserState() {
+  //   print("Init User state");
+  //   setUser();
+  // }
 
   Stream<User> get state {
     return FirebaseAuth.instance.authStateChanges();
@@ -23,9 +24,22 @@ class UserState extends ChangeNotifier {
   Future setUser({String uid}) async {
     final userId = uid ?? _auth.currentUser.uid;
     if (userId != null) {
+      print("set User state");
       final doc = await firebaseRef(FirebaseRef.user).doc(userId).get();
 
       currentUser = FBUser.fromDocument(doc);
+
+      if (currentUser.type == UserType.Driver) {
+        print("Driver");
+        final ref = await firebaseRef(FirebaseRef.user)
+            .doc(userId)
+            .collection("Car")
+            .get();
+
+        currentUser.mycar = Car.fromDocument(ref.docs.first);
+      }
+
+      notifyListeners();
     } else {
       print("No User");
     }

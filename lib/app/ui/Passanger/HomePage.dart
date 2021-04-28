@@ -7,7 +7,7 @@ import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/provider/HomeModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
-import 'package:flutter_ub/app/ui/SearchPage.dart';
+import 'package:flutter_ub/app/ui/Passanger/SearchPage.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -487,7 +487,7 @@ class _MainDrawer extends StatelessWidget {
                           SizedBox(
                             height: 5,
                           ),
-                          Text("Profile"),
+                          Text(currentUser.fullname),
                         ],
                       ),
                     ],
@@ -515,6 +515,17 @@ class _MainDrawer extends StatelessWidget {
               icon: Icons.support,
               title: "Support",
             ),
+            TextButton(
+              onPressed: () {
+                final userState =
+                    Provider.of<UserState>(context, listen: false);
+                userState.logout();
+              },
+              child: _DrawerItem(
+                icon: Icons.pages,
+                title: "logout",
+              ),
+            )
           ],
         ),
       ),
