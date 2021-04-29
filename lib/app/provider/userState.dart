@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/firebaseref.dart';
 import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/Car.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
+import 'package:geolocator/geolocator.dart';
 
 class UserState extends ChangeNotifier {
   // FBUser currentUser;
@@ -64,3 +67,4 @@ class UserState extends ChangeNotifier {
 FBUser currentUser;
 Address pickupAddress;
 Address destinationAddress;
+StreamSubscription<Position> homeTabPositionStrem;
