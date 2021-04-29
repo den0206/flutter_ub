@@ -4,7 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
 import 'package:flutter_ub/app/helpers/helperMethod.dart';
-import 'package:flutter_ub/app/provider/HomeModel.dart';
+import 'package:flutter_ub/app/provider/Passanger/HomeModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
 import 'package:flutter_ub/app/ui/Passanger/SearchPage.dart';
