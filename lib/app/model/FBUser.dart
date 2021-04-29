@@ -20,8 +20,7 @@ class FBUser {
   String email;
   int phone;
   UserType type;
-
-  Car mycar;
+  Car car;
 
   Map<String, dynamic> toMap() {
     return {

@@ -50,7 +50,7 @@ class VehicleInfoModel extends ChangeNotifier {
           number: carNumber,
         );
 
-        user.mycar = car;
+        user.car = car;
 
         await firebaseRef(FirebaseRef.user)
             .doc(credential.user.uid)

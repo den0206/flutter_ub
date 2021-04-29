@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
 import 'package:flutter_ub/app/model/Prediction.dart';
-import 'package:flutter_ub/app/provider/SearchPageModel.dart';
+import 'package:flutter_ub/app/provider/Passanger/SearchPageModel.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 import 'package:provider/provider.dart';

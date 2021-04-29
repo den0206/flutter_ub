@@ -30,13 +30,12 @@ class UserState extends ChangeNotifier {
       currentUser = FBUser.fromDocument(doc);
 
       if (currentUser.type == UserType.Driver) {
-        print("Driver");
         final ref = await firebaseRef(FirebaseRef.user)
             .doc(userId)
             .collection("Car")
             .get();
 
-        currentUser.mycar = Car.fromDocument(ref.docs.first);
+        currentUser.car = Car.fromDocument(ref.docs.first);
       }
 
       notifyListeners();

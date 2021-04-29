@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
-import 'package:flutter_ub/app/ui/Driver/DriverPage.dart';
+import 'package:flutter_ub/app/ui/Driver/MainTab.dart';
 import 'package:flutter_ub/app/ui/Passanger/HomePage.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ class BranchView extends StatelessWidget {
             case UserType.Passanger:
               return HomePage();
             case UserType.Driver:
-              return DriverPage();
+              return MainTabPage();
           }
         else {
           model.setUser();
