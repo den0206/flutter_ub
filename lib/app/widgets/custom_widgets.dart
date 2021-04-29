@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({
-    Key key,
-    this.height = 50,
-    @required this.width,
-    @required this.title,
-    @required this.onPressed,
-    this.backColor = BrandColors.colorGreen,
-  }) : super(key: key);
+  const CustomButton(
+      {Key key,
+      this.height = 50,
+      @required this.width,
+      @required this.title,
+      @required this.onPressed,
+      this.backColor = BrandColors.colorGreen,
+      this.titleColor = Colors.white})
+      : super(key: key);
 
   final double height;
   final double width;
 
   final String title;
+  final Color titleColor;
   final Color backColor;
-  final Function onPressed;
+  final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: titleColor),
         ),
         onPressed: onPressed,
       ),
