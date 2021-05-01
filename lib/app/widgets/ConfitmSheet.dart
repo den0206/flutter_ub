@@ -1,10 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/brand_colors.dart';
 import 'package:flutter_ub/app/style/style.dart';
 import 'package:flutter_ub/app/widgets/custom_widgets.dart';
 
+// ignore: must_be_immutable
 class ConfirmSheet extends StatelessWidget {
   ConfirmSheet({
     Key key,

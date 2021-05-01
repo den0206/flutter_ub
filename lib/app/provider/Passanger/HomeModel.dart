@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -6,8 +8,10 @@ import 'package:flutter_ub/app/extension/firebaseref.dart';
 import 'package:flutter_ub/app/helpers/helperMethod.dart';
 import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/DirectionDetails.dart';
+import 'package:flutter_ub/app/model/NearByDriver.dart';
 import 'package:flutter_ub/app/provider/userState.dart';
 import 'package:flutter_ub/app/style/style.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -27,16 +31,21 @@ class HomeModel extends ChangeNotifier {
 
   bool drawerOpen = true;
 
+  Stream<List<DocumentSnapshot>> stream;
+  BitmapDescriptor nearByIcon;
+
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> polylines = {};
   Set<Marker> markers = {};
   Set<Circle> circles = {};
 
-  void setPositionLocator({Function(Address) onSuccess}) async {
+  void setPositionLocator(
+      {BuildContext context, Function(Address) onSuccess}) async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
     currentPosition = position;
+    createIcon(context);
 
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cp = CameraPosition(target: pos, zoom: 14);
@@ -51,15 +60,68 @@ class HomeModel extends ChangeNotifier {
     }
   }
 
-  changePadding() {
-    mapBottomPadding = sheetHeight - 30;
-    notifyListeners();
+  void createIcon(BuildContext context) {
+    if (nearByIcon == null) {
+      ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: Size(2, 2));
+
+      BitmapDescriptor.fromAssetImage(
+              imageConfiguration,
+              (Platform.isIOS)
+                  ? "images/car_ios.png"
+                  : "images/car_android.png")
+          .then((icon) {
+        nearByIcon = icon;
+        startGeoFireListner();
+      });
+    }
   }
 
-  void showDetailSheet(
-    UserState userState,
-  ) async {
-    await getDirection(userState);
+  void startGeoFireListner() {
+    final geo = Geoflutterfire();
+
+    GeoFirePoint center = geo.point(
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude);
+
+    double radius = 50;
+    String field = "postion";
+
+    stream = geo
+        .collection(collectionRef: firebaseRef(FirebaseRef.location))
+        .within(center: center, radius: radius, field: field);
+
+    stream.listen(
+      (List<DocumentSnapshot> documnets) {
+        documnets.forEach(
+          (doc) {
+            NearByDriver driver = NearByDriver.fromDocument(doc);
+
+            LatLng driverPostion = LatLng(driver.latitude, driver.longitude);
+            Marker thisMarker = Marker(
+              markerId: MarkerId(
+                "driver${driver.geoHash}",
+              ),
+              position: driverPostion,
+              icon: nearByIcon,
+              rotation: HelperMethod.generateRandomumber(360),
+            );
+
+            markers.add(thisMarker);
+          },
+        );
+        notifyListeners();
+      },
+    );
+  }
+
+  void changePadding() {
+    mapBottomPadding = sheetHeight - 30;
+    // notifyListeners();
+  }
+
+  void showDetailSheet() async {
+    await getDirection();
 
     drawerOpen = false;
     sheetHeight = 0;
@@ -79,8 +141,7 @@ class HomeModel extends ChangeNotifier {
     dismissGmapPer();
 
     setPositionLocator();
-
-    notifyListeners();
+    startGeoFireListner();
   }
 
   dismissGmapPer() {
@@ -100,7 +161,7 @@ class HomeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getDirection(UserState userState) async {
+  Future<void> getDirection() async {
     var pickup = pickupAddress;
     var destination = destinationAddress;
 

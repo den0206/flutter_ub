@@ -75,7 +75,7 @@ class HomeTabModel extends ChangeNotifier {
   }
 
   void backOffline() {
-    geoRef.delete(currentUser.id);
+    // geoRef.delete(currentUser.id);
     geoRef = null;
 
     isOnline = false;
