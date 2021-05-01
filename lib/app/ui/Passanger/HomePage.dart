@@ -284,7 +284,9 @@ class _MainGmap extends StatelessWidget {
         model.mapController = controller;
 
         model.changePadding();
+
         model.setPositionLocator(
+          context: context,
           onSuccess: (address) {
             Provider.of<UserState>(context, listen: false)
                 .updatePickupAddress(address);
@@ -355,9 +357,7 @@ class _MainSheet extends StatelessWidget {
                     // model.getDirection(
                     //     Provider.of<UserState>(context, listen: false));
 
-                    model.showDetailSheet(
-                      Provider.of<UserState>(context, listen: false),
-                    );
+                    model.showDetailSheet();
                   }
                 },
                 child: SearchPanel(

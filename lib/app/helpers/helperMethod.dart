@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_ub/app/extension/sec.dart';
 import 'package:flutter_ub/app/helpers/requestHelper.dart';
@@ -61,5 +63,13 @@ class HelperMethod {
     double totalFare = baseFare + distanceFare + timeFare;
 
     return totalFare.truncate();
+  }
+
+  static double generateRandomumber(int max) {
+    var generator = Random();
+
+    int ranInt = generator.nextInt(max);
+
+    return ranInt.toDouble();
   }
 }
