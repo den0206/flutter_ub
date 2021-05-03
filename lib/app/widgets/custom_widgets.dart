@@ -49,7 +49,9 @@ Future showErrorDialog(BuildContext context, error) {
     builder: (context) {
       return AlertDialog(
         title: Text("Error"),
-        content: Text("${error.message ?? error} Error"),
+        content: error.message != null
+            ? Text("${error.message ?? "UNKnown"} Error")
+            : Text("UnknownError"),
         actions: [
           TextButton(
             onPressed: () {
