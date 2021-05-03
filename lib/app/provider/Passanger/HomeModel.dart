@@ -45,14 +45,13 @@ class HomeModel extends ChangeNotifier {
         desiredAccuracy: LocationAccuracy.bestForNavigation);
 
     currentPosition = position;
-    createIcon(context);
 
     LatLng pos = LatLng(position.latitude, position.longitude);
     CameraPosition cp = CameraPosition(target: pos, zoom: 14);
     mapController.animateCamera(CameraUpdate.newCameraPosition(cp));
 
     Address address = await HelperMethod.findCordingAddress(position);
-
+    createIcon(context);
     if (address != null) {
       onSuccess(address);
     } else {

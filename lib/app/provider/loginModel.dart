@@ -18,11 +18,8 @@ class LoginModel extends ChangeNotifier {
       return;
     }
     try {
-      UserCredential credential = await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .catchError((e) {
-        onFail(e);
-      });
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
 
       if (credential.user != null) {
         notifyListeners();

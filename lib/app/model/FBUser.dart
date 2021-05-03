@@ -69,4 +69,5 @@ class UserKey {
   static final email = "email";
   static final phone = "phone";
   static final type = "type";
+  static final token = "token";
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ub/app/extension/firebaseref.dart';
+import 'package:flutter_ub/app/helpers/notificationService.dart';
 import 'package:flutter_ub/app/model/Address.dart';
 import 'package:flutter_ub/app/model/Car.dart';
 import 'package:flutter_ub/app/model/FBUser.dart';
@@ -40,11 +41,17 @@ class UserState extends ChangeNotifier {
 
         currentUser.car = Car.fromDocument(ref.docs.first);
       }
-
+      // getToken();
       notifyListeners();
     } else {
       print("No User");
     }
+  }
+
+  void getToken() {
+    NotificationService notificationService = NotificationService();
+
+    notificationService.getToken();
   }
 
   Future logout() async {
