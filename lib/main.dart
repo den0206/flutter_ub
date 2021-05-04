@@ -8,10 +8,6 @@ import 'package:flutter_ub/app/ui/LoginPage.dart';
 import 'package:flutter_ub/app/ui/SignupPage.dart';
 import 'package:provider/provider.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
