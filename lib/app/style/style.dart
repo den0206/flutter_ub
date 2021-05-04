@@ -34,3 +34,5 @@ const String kDriver = "Driver";
 final double ksheetHeight = (Platform.isIOS) ? 300 : 275;
 final double krideDetailSheetHeight = (Platform.isIOS) ? 235 : 260;
 final double krequestSheetHeight = (Platform.isIOS) ? 220 : 195;
+
+final double kacceptSheetHeight = (Platform.isIOS) ? 200 : 235;
